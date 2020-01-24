@@ -1,74 +1,67 @@
-function Traveler(name) {
-	this.name = name;
-	this.food = 1;
-	this.isHealthy = true;
-}
-
-Traveler.prototype = {
-	constructor: Traveler,
-	hunt: function() {
+class Traveler {
+	constructor(name) {
+		this.name = name;
+		this.food = 1;
+		this.isHealthy = true;
+	}
+	hunt() {
 		this.food = this.food + 2;
-	},
-	eat: function() {
+	}
+	eat() {
 		if (this.food > 0) {
 			this.food = this.food - 1;
 		} else {
 			this.isHealthy = false;
 		}
 	}
-};
-
-function Doctor(name, food, isHealthy) {
-	Traveler.call(this, name, food, isHealthy);
 }
 
-Doctor.prototype = Object.create(Traveler.prototype);
-Doctor.prototype.constructor = Doctor;
-Doctor.prototype.heal = function(traveler) {
-	traveler.isHealthy = true;
-};
-
-function Hunter(name, food, isHealthy) {
-	Traveler.call(this, name, food, isHealthy);
-	this.food = 2;
-}
-
-Hunter.prototype = Object.create(Traveler.prototype);
-Hunter.prototype.constructor = Hunter;
-Hunter.prototype.eat = function() {
-	this.food = this.food - 2;
-	if (this.food < 0) {
-		this.food = 0;
-		this.isHealthy = false;
+class Doctor extends Traveler {
+	constructor(name, food, isHealthy) {
+		super(name, food, isHealthy);
 	}
-};
-Hunter.prototype.hunt = function() {
-	this.food = this.food + 5;
-};
-Hunter.prototype.giveFood = function(traveler, food) {
-	if (this.food > food) {
-		traveler.food += food;
-		this.food -= food;
+	heal(traveler) {
+		traveler.isHealthy = true;
 	}
-	return "I dont have enough food.";
-};
-
-function Wagon(capacity) {
-	Traveler.call(this, name);
-	this.capacity = capacity;
-	this.passengers = [];
 }
 
-Wagon.prototype = {
-	constructor: Wagon,
-	getAvailableSeatCount: function() {
+class Hunter extends Traveler {
+	constructor(name, food, isHealthy) {
+		super(name, food, isHealthy);
+		this.food = 2;
+	}
+	eat() {
+		this.food = this.food - 2;
+		if (this.food < 0) {
+			this.food = 0;
+			this.isHealthy = false;
+		}
+	}
+	hunt() {
+		this.food = this.food + 5;
+	}
+	giveFood(traveler, food) {
+		if (this.food > food) {
+			traveler.food += food;
+			this.food -= food;
+		}
+		return "I don't have enough food.";
+	}
+}
+
+class Wagon {
+	constructor(capacity) {
+		this.capacity = capacity;
+		this.passengers = [];
+	}
+	getAvailableSeatCount() {
 		return this.capacity - this.passengers.length;
-	},
-	join: function join(travelers) {
+	}
+	join(travelers) {
 		if (this.passengers.length < this.capacity) {
 			this.passengers.push(travelers);
 		}
-	},
+	}
 	shouldQuarantine() {
 		let passenger = this.passengers;
 		let totalPassengers = this.passengers.length;
@@ -78,15 +71,15 @@ Wagon.prototype = {
 			}
 		}
 		return false;
-	},
-	totalFood: function totalFood() {
+	}
+	totalFood() {
 		let totalFood = 0;
-		for (i = 0; i < this.passengers.length; i++) {
+		for (let i = 0; i < this.passengers.length; i++) {
 			totalFood = this.passengers[i].food + totalFood;
 		}
 		return totalFood;
 	}
-};
+}
 
 // * Test Code * //
 // Create a wagon that can hold 4 people
